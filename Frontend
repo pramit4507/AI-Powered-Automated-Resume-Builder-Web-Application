@@ -1,1 +1,131 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ExecutiveAI Resume Builder + ATS</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=Poppins:wght@600&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="app-container">
+        <aside class="editor-panel">
+            <header class="editor-header">
+                <h1>Executive<span class="highlight">AI</span></h1>
+                <p>2026 Professional Edition</p>
+            </header>
 
+            <div class="form-container">
+                <div class="ats-widget">
+                    <div class="ats-score-circle">
+                        <span id="scoreValue">0%</span>
+                    </div>
+                    <div class="ats-info">
+                        <h4>ATS OPTIMIZATION</h4>
+                        <p id="atsFeedback">Start typing to scan...</p>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>SELECT TEMPLATE</h3>
+                    <div class="template-selector">
+                        <button class="tpl-btn active" onclick="setTemplate('executive', this)">Executive</button>
+                        <button class="tpl-btn" onclick="setTemplate('modern', this)">Modern</button>
+                    </div>
+                </div>
+
+                <div class="form-section">
+                    <h3>1. ESSENTIALS</h3>
+                    <input type="text" id="fullName" placeholder="Full Name" oninput="updatePreview()">
+                    <input type="text" id="jobTitle" placeholder="Professional Title (e.g. Developer)" oninput="updatePreview()">
+                    <div class="row-inputs">
+                        <input type="email" id="email" placeholder="Email" oninput="updatePreview()">
+                        <input type="tel" id="phone" placeholder="Phone" oninput="updatePreview()">
+                    </div>
+                    <input type="text" id="location" placeholder="City, State" oninput="updatePreview()">
+                </div>
+
+                <div class="form-section">
+                    <div class="section-header-ai">
+                        <h3>2. SUMMARY</h3>
+                        <button class="ai-btn" onclick="aiFix('profile')"><i class="fa-solid fa-wand-magic-sparkles"></i> AI FIX</button>
+                    </div>
+                    <textarea id="profileSummary" placeholder="e.g. Senior Software Developer with..." oninput="updatePreview()"></textarea>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-header-ai">
+                        <h3>3. EXPERIENCE</h3>
+                        <button class="ai-btn" onclick="aiFix('experience')"><i class="fa-solid fa-wand-magic-sparkles"></i> AI BOOST</button>
+                    </div>
+                    <textarea id="experienceInput" placeholder="Work history (One point per line)..." oninput="updatePreview()"></textarea>
+                </div>
+
+                <div class="form-section">
+                    <div class="section-header-ai">
+                        <h3>4. SKILLS</h3>
+                        <button class="ai-btn" onclick="aiFix('skills')"><i class="fa-solid fa-wand-magic-sparkles"></i> AI AUTO-TAG</button>
+                    </div>
+                    <textarea id="skillsInput" placeholder="React, Node.js, Python, AWS..." oninput="updatePreview()"></textarea>
+                </div>
+
+                <div class="form-section">
+                    <h3>5. EDUCATION</h3>
+                    <textarea id="educationInput" placeholder="e.g. MS in Computer Science | MIT | 2022" oninput="updatePreview()"></textarea>
+                </div>
+
+                <div class="form-section">
+                    <h3>6. Acheivements & Certifications</h3>
+                    <textarea id="AcheivementsInput" placeholder="e.g. NPTEL Web Development Certification course" oninput="updatePreview()"></textarea>
+                </div>
+            </div>
+
+            <button class="download-btn" onclick="window.print()">
+                <i class="fa-solid fa-file-pdf"></i> Download PDF
+            </button>
+        </aside>
+
+        <main class="preview-panel">
+            <div id="resumePreview" class="template-executive">
+                <div class="preview-header">
+                    <h1 id="prevName">YOUR NAME</h1>
+                    <h2 id="prevTitle">PROFESSIONAL TITLE</h2>
+                    <div class="contact-line">
+                        <span id="prevEmail">email@example.com</span>
+                        <span id="prevPhone">+00 000 0000</span>
+                        <span id="prevLocation">City, State</span>
+                    </div>
+                </div>
+                
+                <div class="preview-body">
+                    <section class="resume-section">
+                        <h4 class="section-title">PROFESSIONAL SUMMARY</h4>
+                        <div class="section-divider"></div>
+                        <p id="prevSummary">Detailed summary goes here...</p> 
+                    </section>
+
+                    <section class="resume-section">
+                        <h4 class="section-title">WORK EXPERIENCE/PROJECTS</h4>
+                        <div class="section-divider"></div>
+                        <ul id="expBullets" class="bullet-list"></ul>
+                    </section>
+
+                    <section class="resume-section">
+                        <h4 class="section-title">SKILLS</h4>
+                        <div class="section-divider"></div>
+                        <div id="prevSkills" class="skills-grid"></div>
+                    </section>
+
+                    <section class="resume-section">
+                        <h4 class="section-title">EDUCATION</h4>
+                        <div class="section-divider"></div>
+                        <div id="prevEducation" class="edu-text">Your Degree and University</div>
+                    </section>
+                </div>
+            </div>
+        </main>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
