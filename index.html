@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>ExecutiveAI – AI Resume Builder &amp; ATS Analyzer</title>
+
+<!-- Google Fonts -->
+<link rel="preconnect" href="https://fonts.googleapis.com" />
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@500;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+<!-- Font Awesome -->
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css" />
+
+<link rel="stylesheet" href="style.css" />
+</head>
+<body data-theme="dark">
+
+<!-- ============ TOP HEADER ============ -->
+<header class="app-header">
+  <div class="brand">
+    <div class="brand-mark"><i class="fa-solid fa-bolt"></i></div>
+    <div class="brand-text">
+      <h1>ExecutiveAI</h1>
+      <span>2026 Professional Edition</span>
+    </div>
+  </div>
+
+  <div class="header-actions">
+    <div class="completion-pill" title="Resume completion">
+      <div class="completion-track"><div class="completion-fill" id="completionFill"></div></div>
+      <span id="completionLabel">0% complete</span>
+    </div>
+    <button class="icon-btn" id="themeToggle" title="Toggle editor theme">
+      <i class="fa-solid fa-moon"></i>
+    </button>
+    <button class="ghost-btn" id="saveDraftBtn"><i class="fa-solid fa-floppy-disk"></i> Save Draft</button>
+    <button class="ghost-btn" id="loadDraftBtn"><i class="fa-solid fa-rotate-left"></i> Load Draft</button>
+    <button class="ghost-btn danger" id="clearResumeBtn"><i class="fa-solid fa-trash"></i> Clear</button>
+    <button class="primary-btn" id="printBtn"><i class="fa-solid fa-print"></i> Print Resume</button>
+    <button class="ai-btn" id="downloadPdfBtn"><i class="fa-solid fa-file-arrow-down"></i> Download PDF</button>
+  </div>
+</header>
+
+<!-- ============ MAIN LAYOUT ============ -->
+<main class="app-layout">
+
+  <!-- ================= LEFT: EDITOR ================= -->
+  <section class="editor-panel" id="editorPanel">
+
+    <!-- ATS WIDGET -->
+    <div class="ats-widget">
+      <div class="ats-ring-wrap">
+        <svg viewBox="0 0 120 120" class="ats-ring">
+          <circle cx="60" cy="60" r="52" class="ring-bg"></circle>
+          <circle cx="60" cy="60" r="52" class="ring-fg" id="atsRingFg"></circle>
+        </svg>
+        <div class="ats-score-num"><span id="atsScoreValue">0</span><small>%</small></div>
+      </div>
+      <div class="ats-info">
+        <h3>ATS OPTIMIZATION</h3>
+        <span class="ats-status" id="atsStatus">Getting started</span>
+        <p class="ats-feedback" id="atsFeedback">Start adding more resume information.</p>
+        <div class="keyword-stats">
+          <div><strong id="keywordsFoundNum">0</strong><span>Keywords Found</span></div>
+          <div><strong id="keywordDensityNum">0%</strong><span>Keyword Density</span></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- TEMPLATE SELECTOR -->
+    <div class="template-selector">
+      <h4><i class="fa-solid fa-swatchbook"></i> Choose Template</h4>
+      <div class="template-grid" id="templateGrid">
+        <button class="template-chip active" data-template="executive">Executive</button>
+        <button class="template-chip" data-template="modern">Modern</button>
+        <button class="template-chip" data-template="minimal">Minimal</button>
+        <button class="template-chip" data-template="professional">Professional</button>
+      </div>
+    </div>
+
+    <!-- AI INSIGHTS -->
+    <div class="insights-card">
+      <h4><i class="fa-solid fa-wand-magic-sparkles"></i> AI Resume Insights</h4>
+      <ul id="insightsList"><li class="muted">Fill in your resume to see insights…</li></ul>
+    </div>
+
+    <!-- 1. ESSENTIALS -->
+    <div class="editor-section" data-section="essentials">
+      <div class="section-header">
+        <h3><i class="fa-solid fa-id-card"></i> Essentials</h3>
+        <i class="fa-solid fa-chevron-down chevron"></i>
+      </div>
+      <div class="section-body open">
+        <div class="grid-2">
+          <div class="field"><label>Full Name</label><input type="text" id="ess-fullName" placeholder="Aditi Sharma" /></div>
+          <div class="field"><label>Professional Title</label><input type="text" id="ess-title" placeholder="Software Engineer" /></div>
+          <div class="field"><label>Email</label><input type="email" id="ess-email" placeholder="you@email.com" /></div>
+          <div class="field"><label>Phone</label><input type="tel" id="ess-phone" placeholder="+91 98765 43210" /></div>
+          <div class="field"><label>Location</label><input type="text" id="ess-location" placeholder="Pune, India" /></div>
+          <div class="field"><label>LinkedIn URL</label><input type="text" id="ess-linkedin" placeholder="linkedin.com/in/yourname" /></div>
+          <div class="field"><label>GitHub URL</label><input type="text" id="ess-github" placeholder="github.com/yourname" /></div>
+          <div class="field"><label>Portfolio URL</label><input type="text" id="ess-portfolio" placeholder="yourportfolio.com" /></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- 2. PROFESSIONAL SUMMARY -->
+    <div class="editor-section" data-section="summary">
+      <div class="section-header">
+        <h3><i class="fa-solid fa-align-left"></i> Professional Summary</h3>
+        <i class="fa-solid fa-chevron-down chevron"></i>
+      </div>
+      <div class="section-body open">
+        <textarea id="summaryText" rows="5" placeholder="Write 2-3 sentences about your experience, strengths and goals…"></textarea>
+        <div class="field-footer">
+          <span id="summaryCount" class="counter">0 words</span>
+          <button class="ai-btn small" id="aiFixBtn"><i class="fa-solid fa-sparkles"></i> AI FIX</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 3. WORK EXPERIENCE -->
+    <div class="editor-section" data-section="experience">
+      <div class="section-header">
+        <h3><i class="fa-solid fa-briefcase"></i> Work Experience</h3>
+        <i class="fa-solid fa-chevron-down chevron"></i>
+      </div>
+      <div class="section-body open">
+        <div id="experienceList" class="repeatable-list"></div>
+        <div class="field-footer">
+          <button class="dashed-btn" id="addExperienceBtn"><i class="fa-solid fa-plus"></i> Add Experience</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 4. PROJECTS -->
+    <div class="editor-section" data-section="projects">
+      <div class="section-header">
+        <h3><i class="fa-solid fa-diagram-project"></i> Projects</h3>
+        <i class="fa-solid fa-chevron-down chevron"></i>
+      </div>
+      <div class="section-body open">
+        <div id="projectsList" class="repeatable-list"></div>
+        <div class="field-footer">
+          <button class="dashed-btn" id="addProjectBtn"><i class="fa-solid fa-plus"></i> Add Project</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 5. SKILLS -->
+    <div class="editor-section" data-section="skills">
+      <div class="section-header">
+        <h3><i class="fa-solid fa-layer-group"></i> Skills</h3>
+        <i class="fa-solid fa-chevron-down chevron"></i>
+      </div>
+      <div class="section-body open">
+        <div class="field"><label>Technical Skills</label><input type="text" id="skill-technical" placeholder="Data Structures, OOP, REST APIs" /></div>
+        <div class="field"><label>Programming Languages</label><input type="text" id="skill-languages" placeholder="Python, Java, JavaScript" /></div>
+        <div class="field"><label>Frameworks</label><input type="text" id="skill-frameworks" placeholder="React, Node.js, Express" /></div>
+        <div class="field"><label>Databases</label><input type="text" id="skill-databases" placeholder="MySQL, MongoDB" /></div>
+        <div class="field"><label>Tools</label><input type="text" id="skill-tools" placeholder="Git, Docker, AWS" /></div>
+        <div class="field"><label>Soft Skills</label><input type="text" id="skill-soft" placeholder="Communication, Leadership, Teamwork" /></div>
+        <div class="field-footer">
+          <span class="hint">Separate skills with commas</span>
+          <button class="ai-btn small" id="aiTagBtn"><i class="fa-solid fa-tags"></i> AI AUTO-TAG</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 6. EDUCATION -->
+    <div class="editor-section" data-section="education">
+      <div class="section-header">
+        <h3><i class="fa-solid fa-graduation-cap"></i> Education</h3>
+        <i class="fa-solid fa-chevron-down chevron"></i>
+      </div>
+      <div class="section-body open">
+        <div id="educationList" class="repeatable-list"></div>
+        <div class="field-footer">
+          <button class="dashed-btn" id="addEducationBtn"><i class="fa-solid fa-plus"></i> Add Education</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 7. CERTIFICATIONS -->
+    <div class="editor-section" data-section="certifications">
+      <div class="section-header">
+        <h3><i class="fa-solid fa-certificate"></i> Certifications</h3>
+        <i class="fa-solid fa-chevron-down chevron"></i>
+      </div>
+      <div class="section-body open">
+        <div id="certificationsList" class="repeatable-list"></div>
+        <div class="field-footer">
+          <button class="dashed-btn" id="addCertificationBtn"><i class="fa-solid fa-plus"></i> Add Certification</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 8. ACHIEVEMENTS -->
+    <div class="editor-section" data-section="achievements">
+      <div class="section-header">
+        <h3><i class="fa-solid fa-trophy"></i> Achievements</h3>
+        <i class="fa-solid fa-chevron-down chevron"></i>
+      </div>
+      <div class="section-body open">
+        <div id="achievementsList" class="repeatable-list"></div>
+        <div class="field-footer">
+          <button class="dashed-btn" id="addAchievementBtn"><i class="fa-solid fa-plus"></i> Add Achievement</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 9. INTERNSHIPS -->
+    <div class="editor-section" data-section="internships">
+      <div class="section-header">
+        <h3><i class="fa-solid fa-user-tie"></i> Internships</h3>
+        <i class="fa-solid fa-chevron-down chevron"></i>
+      </div>
+      <div class="section-body open">
+        <div id="internshipsList" class="repeatable-list"></div>
+        <div class="field-footer">
+          <button class="dashed-btn" id="addInternshipBtn"><i class="fa-solid fa-plus"></i> Add Internship</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 10. LANGUAGES -->
+    <div class="editor-section" data-section="languages">
+      <div class="section-header">
+        <h3><i class="fa-solid fa-language"></i> Languages</h3>
+        <i class="fa-solid fa-chevron-down chevron"></i>
+      </div>
+      <div class="section-body open">
+        <div id="languagesList" class="repeatable-list"></div>
+        <div class="field-footer">
+          <button class="dashed-btn" id="addLanguageBtn"><i class="fa-solid fa-plus"></i> Add Language</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- 11. INTERESTS -->
+    <div class="editor-section" data-section="interests">
+      <div class="section-header">
+        <h3><i class="fa-solid fa-heart"></i> Interests</h3>
+        <i class="fa-solid fa-chevron-down chevron"></i>
+      </div>
+      <div class="section-body open">
+        <textarea id="interestsText" rows="2" placeholder="Chess, Photography, Blogging, Open Source…"></textarea>
+      </div>
+    </div>
+
+    <!-- 12. EXTRA-CURRICULAR -->
+    <div class="editor-section" data-section="extracurricular">
+      <div class="section-header">
+        <h3><i class="fa-solid fa-people-group"></i> Extra-Curricular Activities</h3>
+        <i class="fa-solid fa-chevron-down chevron"></i>
+      </div>
+      <div class="section-body open">
+        <textarea id="extraText" rows="3" placeholder="Clubs, events, leadership roles, volunteering, competitions…"></textarea>
+      </div>
+    </div>
+
+    <!-- SECTION ORDER (drag & drop) -->
+    <div class="editor-section" data-section="order">
+      <div class="section-header">
+        <h3><i class="fa-solid fa-arrows-up-down"></i> Reorder Resume Sections</h3>
+        <i class="fa-solid fa-chevron-down chevron"></i>
+      </div>
+      <div class="section-body open">
+        <p class="hint">Drag items to change the order they appear in your resume.</p>
+        <ul id="sectionOrderList" class="order-list"></ul>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ================= RIGHT: PREVIEW ================= -->
+  <section class="preview-panel">
+    <div class="preview-toolbar">
+      <span><i class="fa-solid fa-eye"></i> Live Preview</span>
+      <span class="template-badge" id="templateBadge">Executive</span>
+    </div>
+    <div class="preview-scroll">
+      <div id="resumePreview" class="resume-page template-executive"></div>
+    </div>
+  </section>
+
+</main>
+
+<!-- Toast container -->
+<div id="toastContainer" class="toast-container"></div>
+
+<script src="script.js"></script>
+</body>
+</html>
